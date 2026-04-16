@@ -15,25 +15,34 @@ export default function MainLayout() {
       <div style={{ flex: 1 }}>
         <Topbar />
 
-        <div style={{ padding: "20px" }}>
-          <Outlet context={{ posts }} />
-        </div>
+      <div
+  style={{
+    flex: 1,
+    padding: "20px",
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column"
+  }}
+>
+  <div
+    style={{
+      width: "100%",
+      maxWidth: "700px",
+    }}
+  >
+    <Outlet context={{ posts }} />
+  </div>
+</div>
       </div>
-
-      {showModal && (
-        <CreatePostModal
-          closeModal={() => setShowModal(false)}
-          onCreate={(text) => {
-            const newPost = {
-              id: Date.now(),
-              user: "You",
-              text,
-            };
-
-            setPosts([newPost, ...posts]);
-          }}
-        />
-      )}
+{showModal && (
+  <CreatePostModal
+    closeModal={() => setShowModal(false)}
+    onCreate={(newPost) => {
+      setPosts([newPost, ...posts]);
+    }}
+  />
+)}
+    
     </div>
   );
 }
