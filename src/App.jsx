@@ -11,7 +11,7 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Protected layout */}
+   
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="profile" element={<Profile />} />
@@ -19,7 +19,7 @@ function App() {
           <Route path="notifications" element={<Notifications />} />
         </Route>
 
-        {/* Auth */}
+   
         <Route path="/login" element={<Login />} />
 
       </Routes>
