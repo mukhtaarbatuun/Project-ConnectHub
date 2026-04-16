@@ -1,41 +1,70 @@
-// 👉 FAKE API (UI ONLY — no backend)
+import { supabase } from '../lib/supabaseClient'
 
-export const getPosts = async () => {
-  return [
-    {
-      id: 1,
-      user: "Alex Chen",
-      text: "Just shipped a new feature 🚀",
-      image: "",
-      likes: 12,
-      comments: 3,
-    },
-    {
-      id: 2,
-      user: "Mike Rodriguez",
-      text: "Amazing sunset today 🌅",
-      image: "",
-      likes: 5,
-      comments: 1,
-    },
-    {
-      id: 3,
-      user: "Sarah Williams",
-      text: "Working on my new project 💻",
-      image: "",
-      likes: 8,
-      comments: 2,
-    },
-  ];
-};
+// Get Posts
+export async function getPosts() {
+  const { data, error } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      profiles (username, avatar_url),
+      likes (user_id)
+    `)
+    .order('created_at', { ascending: false })
 
-export const createPost = async (text) => {
-  return {
-    id: Date.now(),
-    user: "You",
-    text: text,
-    image: "",
-    likes: 0,
-    comments: 0,
-  };
-};
+  if (error) throw error
+
+  return data
+}
+
+// Create Post
+export async function createPost(content, imageFile) {
+  const { data: userData } = await supabase.auth.getUser()
+  const user = userData.user
+
+  if (!user) throw new Error('Not authenticated')
+
+  let image_url = null
+
+  if (imageFile) {
+    const filePath = `${user.id}/${Date.now()}-${imageFile.name}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('post-images')
+      .upload(filePath, imageFile)
+
+    if (uploadError) throw uploadError
+
+    const { data } = supabase.storage
+      .from('post-images')
+      .getPublicUrl(filePath)
+
+    image_url = data.publicUrl
+  }
+
+  const { data, error } = await supabase.from('posts').insert({
+    user_id: user.id,
+    content,
+    image_url
+  })
+
+  if (error) throw error
+
+  return data
+}
+
+// Like Post
+export async function likePost(postId) {
+  const { data: userData } = await supabase.auth.getUser()
+  const user = userData.user
+
+  if (!user) throw new Error('Not authenticated')
+
+  const { error } = await supabase.from('likes').insert({
+    user_id: user.id,
+    post_id: postId
+  })
+
+  if (error) throw error
+}
+
+
