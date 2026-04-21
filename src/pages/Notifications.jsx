@@ -1,11 +1,19 @@
 export default function Notifications() {
   return (
-    <div>
-      <h2>Notifications</h2>
+    <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
+      <h3>Notifications</h3>
 
-      <div>Sarah liked your post</div>
-      <div>Mike followed you</div>
-      <div>Emma commented</div>
+      <div style={{ marginTop: "20px", color: "#555" }}>
+        <div style={{ padding: "10px 0", borderBottom: "1px solid #eee" }}>
+          Sarah liked your post ❤️
+        </div>
+        <div style={{ padding: "10px 0", borderBottom: "1px solid #eee" }}>
+          Mike followed you 👤
+        </div>
+        <div style={{ padding: "10px 0" }}>
+          Emma commented on your post 💬
+        </div>
+      </div>
     </div>
   );
 }

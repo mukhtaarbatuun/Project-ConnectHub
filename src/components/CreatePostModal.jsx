@@ -1,15 +1,30 @@
 import { useState } from "react";
-
+import { createPost } from "../api/posts";
 export default function CreatePostModal({ closeModal, onCreate }) {
   const [text, setText] = useState("");
 
-  const handleSubmit = () => {
-    if (!text) return;
+ const handleSubmit = async () => {
+  if (!text) return;
 
-    onCreate(text);
-    closeModal();
-  };
+  let newPost = await createPost(text);
 
+
+
+
+  if (!newPost) {
+    newPost = {
+      id: Date.now(),
+      user: "You",
+      text: text,
+      image: "",
+      likes: 0,
+      comments: 0,
+    };
+  }
+
+  onCreate(newPost);
+  closeModal();
+};
   return (
     <div
       style={{
@@ -30,7 +45,7 @@ export default function CreatePostModal({ closeModal, onCreate }) {
         placeholder="What's happening?"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        style={{ width: "100%", marginBottom: "10px" }}
+        style={{ width: "100%", marginBottom: "10px", minHeight: "80px"  }}
       />
 
       <button onClick={handleSubmit}>Post</button>

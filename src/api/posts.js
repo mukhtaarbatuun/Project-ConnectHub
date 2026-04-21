@@ -67,18 +67,4 @@ export async function likePost(postId) {
   if (error) throw error
 }
 
-// Unlike Post
-export async function unlikePost(postId) {
-  const { data: userData } = await supabase.auth.getUser()
-  const user = userData.user
 
-  if (!user) throw new Error('Not authenticated')
-
-  const { error } = await supabase
-    .from('likes')
-    .delete()
-    .eq('user_id', user.id)
-    .eq('post_id', postId)
-
-  if (error) throw error
-}
